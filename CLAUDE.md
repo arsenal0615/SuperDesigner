@@ -4,9 +4,19 @@
 
 ## 项目概述
 
-SuperDesigner 是一个面向游戏团队的 **Cursor / Claude Code 插件**，自动化从 UI 设计参考（图片 + 策划案）到引擎预设（Unity uGUI / UE UMG）的完整流水线。项目以中文为主 — README、注释和校验提示均使用中文。
+SuperDesigner 是一个面向游戏团队的 **AI 编码助手插件**（兼容 Claude Code / Cursor / OpenCode），自动化从 UI 设计参考（图片 + 策划案）到引擎预设（Unity uGUI / UE UMG）的完整流水线。项目以中文为主 — README、注释和校验提示均使用中文。
 
-插件由一组 **Cursor Skills**（`.cursor/skills/superdesigner/`）和 **Python CLI 脚本**（`scripts/`）组成。它生成引擎无关的中间格式 **UI Spec YAML**，再通过适配器转换为引擎 MCP 命令。
+插件由一组 **Agent Skills**（`.claude/skills/superdesigner-*/`）和 **Python CLI 脚本**（`scripts/`）组成。它生成引擎无关的中间格式 **UI Spec YAML**，再通过适配器转换为引擎 MCP 命令。
+
+### Skills 兼容性
+
+Skills 遵循 [Agent Skills 开放标准](https://agentskills.io)，存放在 `.claude/skills/` 目录下，三个工具均可发现：
+
+| 工具 | 发现方式 | 斜杠命令 |
+|------|---------|---------|
+| **Claude Code** | 原生读取 `.claude/skills/` | `/superdesigner-*` |
+| **Cursor** | 交叉兼容读取 `.claude/skills/` | `/superdesigner-*` |
+| **OpenCode** | 交叉兼容读取 `.claude/skills/` + `.opencode/commands/` 提供斜杠命令 | `/superdesigner-*` |
 
 ### 本仓库是什么
 - 一个安装到其他游戏工程中使用的插件
@@ -55,18 +65,18 @@ python scripts/knowledge_manager.py disable --id vp_001
 ### 流水线
 
 ```
-图片/策划案 → /analyze → UI Spec YAML
-                           ↓
-                       /map（补充交互关系）
-                           ↓
-                       /resolve-assets（资产匹配 + 生图兜底）
-                           ↓
-                       /validate（命名、完整性校验）
-                           ↓
-                       /generate（通过 MCP 生成引擎预设）
+图片/策划案 → /superdesigner-analyze-ui → UI Spec YAML
+                                            ↓
+                        /superdesigner-map-interactions（补充交互关系）
+                                            ↓
+                        /superdesigner-resolve-assets（资产匹配 + 生图兜底）
+                                            ↓
+                        /superdesigner-validate-spec（命名、完整性校验）
+                                            ↓
+                        /superdesigner-generate-assets（通过 MCP 生成引擎预设）
 ```
 
-一键模式：`/design` 运行完整流水线。更新模式：`/update` 对比新旧 spec，尊重所有权和动画安全。
+一键模式：`/superdesigner-design` 运行完整流水线。更新模式：`/superdesigner-update` 对比新旧 spec，尊重所有权和动画安全。
 
 ### 协作模型
 
@@ -75,7 +85,7 @@ python scripts/knowledge_manager.py disable --id vp_001
 - **UI 美术**：调整视觉属性，标记 `_ownership.last_modified_by: ui`
 - **UE 工程师**：调整布局/交互，标记 `_ownership.last_modified_by: ue`
 
-`/update` 尊重所有权：AI 生成的字段可覆盖，人工修改的字段仅局部更新并保留 `_overrides`，锁定字段完全跳过。
+`/superdesigner-update` 尊重所有权：AI 生成的字段可覆盖，人工修改的字段仅局部更新并保留 `_overrides`，锁定字段完全跳过。
 
 ### 置信度与 TBD 机制
 
@@ -84,7 +94,7 @@ AI 分析阶段为生成的属性分配置信度：
 - `_confidence: low` — 不确定（九宫格边距、透明度、z-order）
 - `source: TBD` — 无法推断（资产路径、本地化 key、音效、数据绑定）
 
-`/validate` 扫描所有 TBD 和低置信度字段，汇总为待确认清单。
+`/superdesigner-validate-spec` 扫描所有 TBD 和低置信度字段，汇总为待确认清单。
 
 ### 脚本
 
