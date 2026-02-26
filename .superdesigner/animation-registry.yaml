@@ -1,0 +1,19 @@
+# .superdesigner/animation-registry.yaml
+# 记录已有动画与控件节点的绑定关系
+# 由 UI/UE 手动维护，或通过引擎 MCP 读取后更新
+
+animations:
+  - id: Anim_PreBattleLoadout_Show
+    screen: PreBattleLoadout
+    bound_nodes:
+      - node_id: Panel_Root
+        properties: [opacity]
+    engine_path: TBD
+    notes: "[SuperDesigner] 占位登记：生成后待动画同学补充实际资源路径与曲线"
+# 示例：
+# - id: Anim_BagPanelOpen
+#   screen: BagScreen
+#   bound_nodes:
+#     - node_id: Panel_Bag
+#       properties: [position, scale, opacity]
+#   engine_path: Assets/Animations/UI/BagPanelOpen.anim

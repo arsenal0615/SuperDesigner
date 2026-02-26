@@ -1,0 +1,41 @@
+meta:
+  screen: ExampleScreen
+  system: ExampleSystem
+  size:
+  - 1920
+  - 1080
+  engine: unity
+  version: '1.0'
+components:
+- id: Panel_Main
+  type: Panel
+  anchor: stretch
+  size:
+  - fill
+  - fill
+  children:
+  - id: Btn_OpenBag
+    type: Button
+    anchor: bottom-right
+    size:
+    - 200
+    - 80
+    events:
+      on_click: open_screen(BagScreen)
+  - id: wrongname
+    type: Text
+    content: Hello
+    _confidence: low
+  - id: Txt_Title
+    type: Text
+    content: TBD
+    font:
+      family: TBD
+      size: 28
+  - id: Modal_Confirm
+    type: Modal
+    backdrop: true
+interactions:
+- trigger: Btn_OpenBag.on_click
+  action: open_screen
+  target: BagScreen

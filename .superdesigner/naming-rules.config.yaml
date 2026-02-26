@@ -1,0 +1,31 @@
+# .superdesigner/naming-rules.config.yaml
+version: "1.0"
+prefixes:
+  Panel: "Panel_"
+  Button: "Btn_"
+  Text: "Txt_"
+  Image: "Img_"
+  List: "List_"
+  Grid: "Grid_"
+  ScrollView: "Scroll_"
+  Tab: "Tab_"
+  Toggle: "Toggle_"
+  InputField: "Input_"
+  ProgressBar: "Bar_"
+  Particle: "Vfx_"
+  RenderTexture: "RT_"
+  Modal: "Modal_"
+  Slider: "Slider_"
+format:
+  case: PascalCase
+  separator: "_"
+semantic:
+  language: english
+  max_length: 32
+forbidden_words: [Temp, Test, New, Copy]
+item_template_prefix: true
+examples:
+  - input: "打开背包按钮"
+    output: "Btn_OpenBag"
+  - input: "经验进度条"
+    output: "Bar_EXP"

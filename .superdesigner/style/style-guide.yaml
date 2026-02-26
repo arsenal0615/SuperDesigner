@@ -1,0 +1,23 @@
+# .superdesigner/style/style-guide.yaml
+# 美术团队维护：填写项目 UI 风格描述，供生图时使用
+#
+# ⚠️ Replace before use: 下方 project、art_style、color_palette、prompt_keywords 等
+#    均为占位值，使用前请替换为实际项目配置。
+project: "MyProject"
+art_style: "请填写项目 UI 风格描述，例如：东方奇幻，深色调，金色描边"
+color_palette:
+  primary: "#FFFFFF"
+  background: "#000000"
+  accent: "#AAAAAA"
+  danger: "#FF0000"
+prompt_keywords:
+  - "game UI"
+  - "no background transparent PNG"
+  - "high quality"
+# 示例（东方奇幻项目）：
+# art_style: "东方奇幻，深色调，金色描边，水墨纹理"
+# prompt_keywords:
+#   - "oriental fantasy RPG UI"
+#   - "dark gold color scheme"
+#   - "ink wash texture"
+#   - "no background transparent PNG"

@@ -1,0 +1,14 @@
+# 视觉规律知识库 — 由 UI 美术调整记录沉淀而来
+# 每条 pattern 结构：
+#   id: string           唯一标识，如 vp_001
+#   name: string         规律名称
+#   category: visual
+#   trigger:             触发条件（component_type、screen_region 等）
+#     component_type: Button
+#   apply:               应用的默认属性值
+#     padding: [16, 32, 16, 32]
+#   confidence: high|medium|low
+#   usage_count: int
+#   disabled: bool       true 时临时禁用
+#   source: string       来源记录，如 "UI-张伟 2026-01-15"
+patterns: []

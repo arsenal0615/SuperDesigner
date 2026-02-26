@@ -1,0 +1,136 @@
+# .superdesigner/ui-spec.schema.yaml
+# UI Spec 字段参考文档 — AI 生成 spec 时以此为准，人工审查时对照此文档
+# 这不是 JSON Schema，而是带注释的字段说明
+
+version: "1.0"
+
+# ─── meta 块 ────────────────────────────────────────────────────────────────
+meta:
+  screen: string           # 界面名，同时作为文件名（如 MainCity）
+  system: string           # 所属系统，用于多界面归组（如 CitySystem）
+  size: [width, height]    # 设计分辨率，如 [1920, 1080]
+  engine: unity|ue|both    # 目标引擎
+  version: string          # spec 版本，如 "1.0"
+
+# ─── components 块 ──────────────────────────────────────────────────────────
+# 所有控件共享的通用属性
+_common_props:
+  id: string               # 唯一标识，必须遵循 naming-rules.config.yaml
+  type: Panel|Button|Text|Image|List|Grid|ScrollView|Tab|Toggle|InputField|ProgressBar|Particle|RenderTexture|Modal|Slider
+  anchor: top-left|top-center|top-right|middle-left|center|middle-right|bottom-left|bottom-center|bottom-right|stretch
+  pivot: [x, y]            # 0.0~1.0，锚点自身原点
+  offset: [x, y]           # 相对锚点的偏移（像素）
+  size: [w, h]             # 数字 | fill | wrap | ["50%", "100%"]
+  z_order: int             # 渲染层级
+  opacity: float           # 0.0~1.0
+  visible: bool
+  interactable: bool
+  visible_when: "{{expression}}"   # 条件显隐，表达式
+  load_mode: addressable|bundle|resources
+  children: []             # 递归嵌套子控件
+  events:
+    on_click: string       # 简单事件，如 open_screen(BagScreen)
+  states:
+    normal:   {}
+    pressed:  {}
+    disabled: { interactable: false }
+  animation:
+    show: { type: string, duration: float, curve: ease_in|ease_out|ease_in_out|linear }
+    hide: { type: string, duration: float }
+    idle: { type: string, amplitude: float, period: float }
+  sfx:
+    on_click: string|TBD
+    on_show:  string|TBD
+
+# AI 生成时添加的元数据标记（人工审查后应删除 _confidence 和 _ownership）
+_ai_metadata:
+  _confidence: low          # 标记此字段值为低置信度推断，人工确认后删除
+  _ownership:
+    generated_by: ai|ui|ue|designer
+    last_modified_by: string
+    last_modified_at: string   # ISO 日期 如 "2026-02-24"
+    locked: bool
+    lock_reason: string
+  _overrides: {}             # 人工在 AI 生成基础上叠加的修改，/update 时保留
+
+# ─── 各类型专属属性 ─────────────────────────────────────────────────────────
+
+_text_props:                 # type: Text 专属
+  content: string            # 显示文字，支持 {{binding}} 表达式
+  font:
+    family: string           # 字体名，对应引擎内资源名
+    size: int
+    weight: normal|bold|italic
+    color: "#RRGGBB"
+    outline:
+      color: "#RRGGBB"
+      width: int
+  alignment: left|center|right|top-left|top-center|top-right|bottom-left|bottom-center|bottom-right
+  overflow: ellipsis|clip|scroll|expand
+  localize_key: string       # 本地化 key，有值时优先于 content
+
+_image_props:                # type: Image 专属
+  source: string|TBD         # 资产路径，TBD 表示待匹配
+  placeholder: string        # 资产未加载时显示的占位图
+  slice_type: none|nine_slice|tiled
+  slice_border: [top, right, bottom, left]   # 像素
+  color_tint: "#RRGGBB"
+  preserve_aspect: bool
+
+_list_props:                 # type: List|Grid 专属
+  direction: vertical|horizontal
+  gap: [horizontal, vertical]
+  padding: [top, right, bottom, left]
+  item_template: string      # 引用另一个组件 id 或 screen 名
+  data_binding: "{{expression}}"|TBD
+  scroll: bool
+  columns: int               # Grid 专属：列数
+
+_scrollview_props:           # type: ScrollView 专属
+  direction: vertical|horizontal|both
+  scroll_bar: bool
+  elastic: bool              # 橡皮筋回弹
+  content: string            # 内部内容节点 id
+  mask:
+    enabled: bool
+    type: rect|circle|custom
+    soften: bool             # 软边遮罩
+
+_tab_props:                  # type: Tab 专属
+  default_index: int
+  tabs:
+    - id: string
+      label: string
+      icon: string|TBD
+      content_screen: string
+  tab_bar:
+    position: top|bottom|left|right
+    size: [w, h]
+
+_particle_props:             # type: Particle 专属
+  asset: string|TBD
+  loop: bool
+  auto_play: bool
+
+_progressbar_props:          # type: ProgressBar 专属
+  value: float|"{{expression}}"   # 0.0~1.0
+  fill_image: string|TBD
+  bg_image: string|TBD
+
+_modal_props:                # type: Modal 专属
+  backdrop: bool
+  backdrop_color: "#RRGGBBAA"
+  close_on_backdrop: bool
+  transition: fade|scale|slide
+
+_rendertexture_props:        # type: RenderTexture 专属
+  asset: string|TBD          # 挂载的 3D prefab/Actor 路径
+
+# ─── interactions 块 ────────────────────────────────────────────────────────
+_interaction_entry:
+  trigger: "NodeId.event"    # 如 "Btn_OpenBag.on_click" 或 "lifecycle.on_show"
+  action: open_screen|close_screen|call|toggle_visible
+  target: string             # screen 名或函数名
+  transition: string|TBD     # 转场动画
+  duration: float
+  _confidence: low           # AI 推断时添加
